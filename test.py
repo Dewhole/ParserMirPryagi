@@ -17,16 +17,19 @@ def get_html(url, params=None):
 
 def get_pages_count(html):
     soup = BeautifulSoup(html, 'html.parser')
-    pagination = soup.find_all('span', id_='nav-current-page')
+    paginationTo = soup.find('div', class_='navigation-pages')
+    pagination = paginationTo.find_all('a')
+    print(pagination)
     if pagination:
         return int(pagination[-1].get_text())
     else:
         return 1
 
+
 def get_content(html):
     soup = BeautifulSoup(html, 'html.parser')
     items = soup.find_all('div', class_='item_block col-4 col-md-3 col-sm-6 col-xs-6')
-    itemskategory = soup.find_all('div', class_='wraps hover_shine') 
+
     catalog = []
     for item in items:
         image = str(item.find('img'))
@@ -35,12 +38,11 @@ def get_content(html):
             cost = cost.get_text()
         else:
             cost = 'Цену уточняйте' 
-        for itemkategory in itemskategory:
-            kategory = itemkategory.find('h1', id_='pagetitle').get_text(strip=True),
+
 
         catalog.append({
             'title': item.find('a', class_='dark_link').get_text(strip=True),
-            'kategory': kategory,
+
             'image': HOST + (image),
             'kol-vo': item.find('span', class_='value').get_text(strip=True),
         })
@@ -50,9 +52,9 @@ def get_content(html):
 def save_file(items, path):
     with open(path, 'w', newline='') as file:
         writer = csv.writer(file, delimiter=';')
-        writer.writerow(['Название', 'Категория', 'Изображение', 'Наличие',])
+        writer.writerow(['Название', 'Изображение', 'Наличие',])
         for item in items:
-            writer.writerow([item['title'], item['kategory'], item['image'], item['kol-vo']])
+            writer.writerow([item['title'], item['image'], item['kol-vo']])
 
 
 def parse():
@@ -67,7 +69,7 @@ def parse():
             html = get_html(URL, params={'page': page})
             catalog.extend(get_content(html.text))
             time.sleep(1)
-            
+
         save_file(catalog, FILE)
 
 
