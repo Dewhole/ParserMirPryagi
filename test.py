@@ -18,9 +18,10 @@ def get_html(url, params=None):
 def get_pages_count(html):
     soup = BeautifulSoup(html, 'html.parser')
     paginationTo = soup.find('div', class_='navigation-pages')
-    pagination = paginationTo.find_all('a')
-    if pagination:
-        return int(pagination[-1].get_text())
+    if paginationTo:
+        paginationTo = soup.find('div', class_='navigation-pages')
+        pagination = paginationTo.find_all('a') 
+        return int(pagination[-1].get_text())  
     else:
         return 1
 
