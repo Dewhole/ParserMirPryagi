@@ -7,7 +7,7 @@ import urllib
 
 HEADERS = {'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0', 'accept': '*/*'}
 HOST = 'https://www.mir-priaji.ru/'
-FILE = 'catalog.csv'
+
 
 
 def get_html(url, params=None):
@@ -48,6 +48,7 @@ def get_content(html):
     return catalog
 
 
+
 def save_file(items, path):
     with open(path, 'w', newline='') as file:
         writer = csv.writer(file, delimiter=';')
@@ -57,7 +58,64 @@ def save_file(items, path):
 
 
 def parse():
-    for URL in ['https://www.mir-priaji.ru/catalog/aksessuary_dlya_vyshivaniya/', 'https://www.mir-priaji.ru/catalog/applikatsii_termonakleyki/']:
+    for URL in ['https://www.mir-priaji.ru/catalog/aksessuary_dlya_vyshivaniya/', 
+    'https://www.mir-priaji.ru/catalog/applikatsii_termonakleyki/', 
+    'https://www.mir-priaji.ru/catalog/bizhuteriya/', 
+    'https://www.mir-priaji.ru/catalog/biseropletenie/', 
+    'https://www.mir-priaji.ru/catalog/bumaga_gofrirovannaya/', 
+    'https://www.mir-priaji.ru/catalog/businy/',
+    'https://www.mir-priaji.ru/catalog/valyanie/',
+    'https://www.mir-priaji.ru/catalog/dekor_dlya_doma/',
+    'https://www.mir-priaji.ru/catalog/dekupazh/',
+    'https://www.mir-priaji.ru/catalog/zagotovka_forma_dlya_tvorchestva/',
+    'https://www.mir-priaji.ru/catalog/zakolka_zastezhka_dekorativnaya/',
+    'https://www.mir-priaji.ru/catalog/igrushka_tekstilnaya/',
+    'https://www.mir-priaji.ru/catalog/igry_igrovye_nabory_i_aksessuary_k_nim/',
+    'https://www.mir-priaji.ru/catalog/kanva/'
+    'https://www.mir-priaji.ru/catalog/kanitel_dlya_izgotovleniya_bizhuterii/'
+    'https://www.mir-priaji.ru/catalog/kviling/',
+    'https://www.mir-priaji.ru/catalog/kleevye_podkladochnye_materialy/',
+    'https://www.mir-priaji.ru/catalog/kley_kleevye_pistolety/',
+    'https://www.mir-priaji.ru/catalog/korobka_organayzer_boksy_dlya_melochey/',
+    'https://www.mir-priaji.ru/catalog/kosmetika/',
+    'https://www.mir-priaji.ru/catalog/kraski_i_sostavy/',
+    'https://www.mir-priaji.ru/catalog/kryuchki_vyazalnye/',
+    'https://www.mir-priaji.ru/catalog/lenta_atlasnaya/',
+    'https://www.mir-priaji.ru/catalog/mashinki_i_komplektuyushchie/',
+    'https://www.mir-priaji.ru/catalog/muline/',
+    'https://www.mir-priaji.ru/catalog/nabory_dlya_vyshivaniya/',
+    'https://www.mir-priaji.ru/catalog/nabory_dlya_tvorchestva/',
+    'https://www.mir-priaji.ru/catalog/nozhi_i_maty/',
+    'https://www.mir-priaji.ru/catalog/organza/',
+    'https://www.mir-priaji.ru/catalog/osnovy_s_risunkom_dlya_vyshivaniya/',
+    'https://www.mir-priaji.ru/catalog/perya/',
+    'https://www.mir-priaji.ru/catalog/pechatnye_izdaniya/',
+    'https://www.mir-priaji.ru/catalog/prirodnye_materialy/',
+    'https://www.mir-priaji.ru/catalog/pryazha/',
+    'https://www.mir-priaji.ru/catalog/pugovitsy/',
+    'https://www.mir-priaji.ru/catalog/ramki_dlya_gotovykh_rabot/',
+    'https://www.mir-priaji.ru/catalog/rasprodazha/',
+    'https://www.mir-priaji.ru/catalog/skrapbuking_1/',
+    'https://www.mir-priaji.ru/catalog/spitsy_vyazalnye/',
+    'https://www.mir-priaji.ru/catalog/stendy/',
+    'https://www.mir-priaji.ru/catalog/suvenirnaya_produktsiya/',
+    'https://www.mir-priaji.ru/catalog/termomodelirovanie/',
+    'https://www.mir-priaji.ru/catalog/tesma_kruzhevo_lenta/',
+    'https://www.mir-priaji.ru/catalog/tovary_dlya_lepki/',
+    'https://www.mir-priaji.ru/catalog/tovary_dlya_shitya_i_pechvorka/',
+    'https://www.mir-priaji.ru/catalog/ukrasheniya_/',
+    'https://www.mir-priaji.ru/catalog/upakovka/',
+    'https://www.mir-priaji.ru/catalog/fatin/',
+    'https://www.mir-priaji.ru/catalog/fetr/',
+    'https://www.mir-priaji.ru/catalog/floristika/',
+    'https://www.mir-priaji.ru/catalog/foamiran/',
+    'https://www.mir-priaji.ru/catalog/furnitura/',
+    'https://www.mir-priaji.ru/catalog/furnitura_dlya_igrushek/',
+    'https://www.mir-priaji.ru/catalog/tsvety_buketiki_dekorativnye_/',
+    'https://www.mir-priaji.ru/catalog/shkatulki_gazetnitsy_keysy_sumki_dlya_rukodeliya/',
+    'https://www.mir-priaji.ru/catalog/shnury_dlya_rukodeliya/',
+    'https://www.mir-priaji.ru/catalog/emalirovanie/',
+    ]:
 
         html = get_html(URL)
         if html.status_code == 200:
@@ -68,7 +126,7 @@ def parse():
                 html = get_html(URL, params={'page': page})
                 catalog.extend(get_content(html.text))
                 time.sleep(1)
-                
+            FILE = URL[34:-1] + '.csv'   
             save_file(catalog, FILE)
 
 
