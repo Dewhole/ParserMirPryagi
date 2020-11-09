@@ -4,7 +4,7 @@ import csv
 import time
 import urllib
 
-URL = 'https://www.mir-priaji.ru/catalog/pugovitsy/prochie_29/124965/'
+URL = 'https://www.mir-priaji.ru/catalog/aksessuary_dlya_vyshivaniya/'
 HEADERS = {'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0', 'accept': '*/*'}
 HOST = 'https://www.mir-priaji.ru/'
 FILE = 'catalog.csv'
@@ -17,7 +17,7 @@ def get_html(url, params=None):
 
 def get_pages_count(html):
     soup = BeautifulSoup(html, 'html.parser')
-    pagination = soup.find_all('span', class_='page-item mhide')
+    pagination = soup.find_all('span', id_='nav-current-page')
     if pagination:
         return int(pagination[-1].get_text())
     else:
@@ -25,8 +25,8 @@ def get_pages_count(html):
 
 def get_content(html):
     soup = BeautifulSoup(html, 'html.parser')
-    items = soup.find_all('div', class_='wraps hover_shine')
-
+    items = soup.find_all('div', class_='item_block col-4 col-md-3 col-sm-6 col-xs-6')
+    itemskategory = soup.find_all('div', class_='wraps hover_shine') 
     catalog = []
     for item in items:
         image = str(item.find('img'))
@@ -35,11 +35,12 @@ def get_content(html):
             cost = cost.get_text()
         else:
             cost = 'Цену уточняйте' 
+        for itemkategory in itemskategory:
+            kategory = itemkategory.find('h1', id_='pagetitle').get_text(strip=True),
+
         catalog.append({
-            'title': item.find('div', class_='preview_text dotdot').get_text(strip=True),
-            'kategory': item.find('a', class_='number').get_text(strip=True),
-            'kategory2': item.find('div', class_='bx-breadcrumb-item drop').get_text(strip=True),
-            'cost': cost,
+            'title': item.find('a', class_='dark_link').get_text(strip=True),
+            'kategory': kategory,
             'image': HOST + (image),
             'kol-vo': item.find('span', class_='value').get_text(strip=True),
         })
@@ -49,9 +50,9 @@ def get_content(html):
 def save_file(items, path):
     with open(path, 'w', newline='') as file:
         writer = csv.writer(file, delimiter=';')
-        writer.writerow(['Название', 'Категория', 'Подкатегория','Цена', 'Изображение', 'Наличие',])
+        writer.writerow(['Название', 'Категория', 'Изображение', 'Наличие',])
         for item in items:
-            writer.writerow([item['title'], item['kategory'], item['kategory2'], item['cost'], item['image'], item['kol-vo']])
+            writer.writerow([item['title'], item['kategory'], item['image'], item['kol-vo']])
 
 
 def parse():
