@@ -32,10 +32,19 @@ def get_content2(html2):
     soup2 = BeautifulSoup(html2, 'html.parser')
     items2 = soup2.find('li', class_='current')
     bb = items2.find('link').get('href')
-    print(bb)
+    
     items3 = soup2.find('div', class_='detail_text')
-    text = items3.get_text
-    print(text)
+    if items3:
+        text = str(items3.get_text)
+        text2 = text.replace('<br/>', '')
+        text3 = text2.replace('</div>>', '')
+        text4 = text3.replace('<bound method Tag.get_text of <div class="detail_text">', '')
+        print(text4)  
+    else:
+        text = ''     
+        print(text)
+
+
 def parse():
         html = get_html(URL)
         if html.status_code == 200:

@@ -49,7 +49,18 @@ def get_content(html):
         soup2 = BeautifulSoup(html2.text, 'html.parser')
         items2 = soup2.find('li', class_='current')
         bb = items2.find('link').get('href')        
-        
+
+
+        items3 = soup2.find('div', class_='detail_text')
+        if items3:
+            text = str(items3.get_text)
+            text2 = text.replace('<br/>', '')
+            text3 = text2.replace('</div>>', '')
+            text4 = text3.replace('<bound method Tag.get_text of <div class="detail_text">', '')
+            print(text4)
+        else:
+            text = ''     
+                
         cost = item.find('span', class_='grey size13')
         if cost:
             cost = cost.get_text()
@@ -62,6 +73,7 @@ def get_content(html):
             'kategory': soup.find('h1', id='pagetitle').get_text(strip=True),
             'image': HOST + bb[1:],
             'kol-vo': item.find('span', class_='value').get_text(strip=True),
+            'text': text4,
         })
     return catalog
 
@@ -71,9 +83,9 @@ def get_content(html):
 def save_file(items, path):
     with open(path, 'w', newline='') as file:
         writer = csv.writer(file, delimiter=';')
-        writer.writerow(['Категория', 'Название', 'Картинка', 'Наличие',])
+        writer.writerow(['Категория', 'Название', 'Картинка', 'Наличие', 'Описание'])
         for item in items:
-            writer.writerow([item['kategory'], item['title'], item['image'], item['kol-vo']])
+            writer.writerow([item['kategory'], item['title'], item['image'], item['kol-vo'], item['text']])
 
 
 def parse():
