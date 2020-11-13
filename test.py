@@ -15,6 +15,11 @@ def get_html(url, params=None):
     return r
 
 
+def get_html2(url, params=None):
+    d = requests.get(url, headers=HEADERS, params=params)
+    return d
+
+
 def get_pages_count(html):
     soup = BeautifulSoup(html, 'html.parser')
     paginationTo = soup.find('div', class_='navigation-pages')
@@ -24,6 +29,9 @@ def get_pages_count(html):
         return int(pagination[-1].get_text())  
     else:
         return 1
+        
+
+    
 
 
 def get_content(html):
@@ -32,7 +40,16 @@ def get_content(html):
 
     catalog = []
     for item in items:
-        image = str(item.find('img'))
+        ImageLargePage = item.find('a').get('href'),
+        ImageLargePage2 = str(ImageLargePage)[3:-3]
+        PageImageHref =str(HOST) + str(ImageLargePage2)
+        html2 = get_html2(PageImageHref)
+  
+
+        soup2 = BeautifulSoup(html2.text, 'html.parser')
+        items2 = soup2.find('li', class_='current')
+        bb = items2.find('link').get('href')        
+        
         cost = item.find('span', class_='grey size13')
         if cost:
             cost = cost.get_text()
@@ -43,24 +60,49 @@ def get_content(html):
         catalog.append({
             'title': item.find('a', class_='dark_link').get_text(strip=True),
             'kategory': soup.find('h1', id='pagetitle').get_text(strip=True),
-            'image': HOST + (image),
+            'image': HOST + bb[1:],
             'kol-vo': item.find('span', class_='value').get_text(strip=True),
         })
     return catalog
 
 
 
+
 def save_file(items, path):
     with open(path, 'w', newline='') as file:
         writer = csv.writer(file, delimiter=';')
-        writer.writerow(['Категория', 'Название', 'Наличие',])
+        writer.writerow(['Категория', 'Название', 'Картинка', 'Наличие',])
         for item in items:
-            writer.writerow([item['kategory'], item['title'], item['kol-vo']])
+            writer.writerow([item['kategory'], item['title'], item['image'], item['kol-vo']])
 
 
 def parse():
-    for URL in ['https://www.mir-priaji.ru/catalog/aksessuary_dlya_vyshivaniya/', 
-    'https://www.mir-priaji.ru/catalog/applikatsii_termonakleyki/', 
+    for URL in ['https://www.mir-priaji.ru/catalog/bumaga_gofrirovannaya/', 
+
+    ]:
+
+        html = get_html(URL)
+        if html.status_code == 200:
+            catalog = []
+            pages_count = get_pages_count(html.text)
+            for page in range (1, pages_count + 1):
+                print(f'Парсинг страницы {page} {pages_count}...')
+                html = get_html(URL, params={'page': page})
+                catalog.extend(get_content(html.text))
+                time.sleep(1)
+            FILE = URL[34:-1] + '.csv'   
+            save_file(catalog, FILE)
+
+
+            print(f'Получено {len(catalog)} товаров')
+
+        else:
+            print('Error')    
+
+
+parse()
+
+"""     'https://www.mir-priaji.ru/catalog/applikatsii_termonakleyki/', 
     'https://www.mir-priaji.ru/catalog/bizhuteriya/', 
     'https://www.mir-priaji.ru/catalog/biseropletenie/', 
     'https://www.mir-priaji.ru/catalog/bumaga_gofrirovannaya/', 
@@ -115,26 +157,4 @@ def parse():
     'https://www.mir-priaji.ru/catalog/tsvety_buketiki_dekorativnye_/',
     'https://www.mir-priaji.ru/catalog/shkatulki_gazetnitsy_keysy_sumki_dlya_rukodeliya/',
     'https://www.mir-priaji.ru/catalog/shnury_dlya_rukodeliya/',
-    'https://www.mir-priaji.ru/catalog/emalirovanie/',
-    ]:
-
-        html = get_html(URL)
-        if html.status_code == 200:
-            catalog = []
-            pages_count = get_pages_count(html.text)
-            for page in range (1, pages_count + 1):
-                print(f'Парсинг страницы {page} {pages_count}...')
-                html = get_html(URL, params={'page': page})
-                catalog.extend(get_content(html.text))
-                time.sleep(1)
-            FILE = URL[34:-1] + '.csv'   
-            save_file(catalog, FILE)
-
-
-            print(f'Получено {len(catalog)} товаров')
-
-        else:
-            print('Error')    
-
-
-parse()
+    'https://www.mir-priaji.ru/catalog/emalirovanie/', """
