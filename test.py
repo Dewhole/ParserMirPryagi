@@ -57,9 +57,8 @@ def get_content(html):
             text2 = text.replace('<br/>', '')
             text3 = text2.replace('</div>>', '')
             text4 = text3.replace('<bound method Tag.get_text of <div class="detail_text">', '')
-            print(text4)
         else:
-            text = ''     
+            text4 = ''     
                 
         cost = item.find('span', class_='grey size13')
         if cost:
@@ -82,62 +81,14 @@ def get_content(html):
 
 def save_file(items, path):
     with open(path, 'w', newline='') as file:
-        writer = csv.writer(file, delimiter=';')
-        writer.writerow(['Категория', 'Название', 'Картинка', 'Наличие', 'Описание'])
+        writer = csv.writer(file, delimiter='`')
+        writer.writerow(['Категория', 'Название', 'Картинка', 'Описание'])
         for item in items:
-            writer.writerow([item['kategory'], item['title'], item['image'], item['kol-vo'], item['text']])
+            writer.writerow([item['kategory'], item['title'], item['image'], item['text']])
 
 
 def parse():
-    for URL in ['https://www.mir-priaji.ru/catalog/bumaga_gofrirovannaya/', 
-
-    ]:
-
-        html = get_html(URL)
-        if html.status_code == 200:
-            catalog = []
-            pages_count = get_pages_count(html.text)
-            for page in range (1, pages_count + 1):
-                print(f'Парсинг страницы {page} {pages_count}...')
-                html = get_html(URL, params={'page': page})
-                catalog.extend(get_content(html.text))
-                time.sleep(1)
-            FILE = URL[34:-1] + '.csv'   
-            save_file(catalog, FILE)
-
-
-            print(f'Получено {len(catalog)} товаров')
-
-        else:
-            print('Error')    
-
-
-parse()
-
-"""     'https://www.mir-priaji.ru/catalog/applikatsii_termonakleyki/', 
-    'https://www.mir-priaji.ru/catalog/bizhuteriya/', 
-    'https://www.mir-priaji.ru/catalog/biseropletenie/', 
-    'https://www.mir-priaji.ru/catalog/bumaga_gofrirovannaya/', 
-    'https://www.mir-priaji.ru/catalog/businy/',
-    'https://www.mir-priaji.ru/catalog/valyanie/',
-    'https://www.mir-priaji.ru/catalog/dekor_dlya_doma/',
-    'https://www.mir-priaji.ru/catalog/dekupazh/',
-    'https://www.mir-priaji.ru/catalog/zagotovka_forma_dlya_tvorchestva/',
-    'https://www.mir-priaji.ru/catalog/zakolka_zastezhka_dekorativnaya/',
-    'https://www.mir-priaji.ru/catalog/igrushka_tekstilnaya/',
-    'https://www.mir-priaji.ru/catalog/igry_igrovye_nabory_i_aksessuary_k_nim/',
-    'https://www.mir-priaji.ru/catalog/kanva/'
-    'https://www.mir-priaji.ru/catalog/kanitel_dlya_izgotovleniya_bizhuterii/'
-    'https://www.mir-priaji.ru/catalog/kviling/',
-    'https://www.mir-priaji.ru/catalog/kleevye_podkladochnye_materialy/',
-    'https://www.mir-priaji.ru/catalog/kley_kleevye_pistolety/',
-    'https://www.mir-priaji.ru/catalog/korobka_organayzer_boksy_dlya_melochey/',
-    'https://www.mir-priaji.ru/catalog/kosmetika/',
-    'https://www.mir-priaji.ru/catalog/kraski_i_sostavy/',
-    'https://www.mir-priaji.ru/catalog/kryuchki_vyazalnye/',
-    'https://www.mir-priaji.ru/catalog/lenta_atlasnaya/',
-    'https://www.mir-priaji.ru/catalog/mashinki_i_komplektuyushchie/',
-    'https://www.mir-priaji.ru/catalog/muline/',
+    for URL in [
     'https://www.mir-priaji.ru/catalog/nabory_dlya_vyshivaniya/',
     'https://www.mir-priaji.ru/catalog/nabory_dlya_tvorchestva/',
     'https://www.mir-priaji.ru/catalog/nozhi_i_maty/',
@@ -169,4 +120,55 @@ parse()
     'https://www.mir-priaji.ru/catalog/tsvety_buketiki_dekorativnye_/',
     'https://www.mir-priaji.ru/catalog/shkatulki_gazetnitsy_keysy_sumki_dlya_rukodeliya/',
     'https://www.mir-priaji.ru/catalog/shnury_dlya_rukodeliya/',
-    'https://www.mir-priaji.ru/catalog/emalirovanie/', """
+    'https://www.mir-priaji.ru/catalog/emalirovanie/', 
+
+    ]:
+
+        html = get_html(URL)
+        if html.status_code == 200:
+            catalog = []
+            pages_count = get_pages_count(html.text)
+            for page in range (1, pages_count + 1):
+                print(f'Парсинг страницы {page} {pages_count} {URL}...')
+                html = get_html(URL, params={'page': page})
+                catalog.extend(get_content(html.text))
+                time.sleep(1)
+            FILE = URL[34:-1] + '.csv'   
+            save_file(catalog, FILE)
+
+
+            print(f'Получено {len(catalog)} товаров')
+
+        else:
+            print('Error')    
+
+
+parse()
+
+
+
+""" 'https://www.mir-priaji.ru/catalog/bumaga_gofrirovannaya/',
+    'https://www.mir-priaji.ru/catalog/applikatsii_termonakleyki/', 
+    'https://www.mir-priaji.ru/catalog/bizhuteriya/', 
+    'https://www.mir-priaji.ru/catalog/biseropletenie/', 
+    'https://www.mir-priaji.ru/catalog/bumaga_gofrirovannaya/', 
+    'https://www.mir-priaji.ru/catalog/businy/',
+    'https://www.mir-priaji.ru/catalog/valyanie/',
+    'https://www.mir-priaji.ru/catalog/dekor_dlya_doma/',
+    'https://www.mir-priaji.ru/catalog/dekupazh/',
+    'https://www.mir-priaji.ru/catalog/zagotovka_forma_dlya_tvorchestva/',
+    'https://www.mir-priaji.ru/catalog/zakolka_zastezhka_dekorativnaya/',
+    'https://www.mir-priaji.ru/catalog/igrushka_tekstilnaya/',
+    'https://www.mir-priaji.ru/catalog/igry_igrovye_nabory_i_aksessuary_k_nim/',
+    'https://www.mir-priaji.ru/catalog/kanva/'
+    'https://www.mir-priaji.ru/catalog/kanitel_dlya_izgotovleniya_bizhuterii/'
+    'https://www.mir-priaji.ru/catalog/kviling/',
+    'https://www.mir-priaji.ru/catalog/kleevye_podkladochnye_materialy/',
+    'https://www.mir-priaji.ru/catalog/kley_kleevye_pistolety/',
+    'https://www.mir-priaji.ru/catalog/korobka_organayzer_boksy_dlya_melochey/',
+    'https://www.mir-priaji.ru/catalog/kosmetika/',
+    'https://www.mir-priaji.ru/catalog/kraski_i_sostavy/',
+    'https://www.mir-priaji.ru/catalog/kryuchki_vyazalnye/',
+    'https://www.mir-priaji.ru/catalog/lenta_atlasnaya/',
+    'https://www.mir-priaji.ru/catalog/mashinki_i_komplektuyushchie/',
+    'https://www.mir-priaji.ru/catalog/muline/', """
